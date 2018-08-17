@@ -1,4 +1,25 @@
+
+sudo: required
 language: java
 
-notifications:
-    email: false
+jdk:
+  - oraclejdk8
+
+script:
+  - mvn clean cobertura:cobertura -Dtest=CatalanPatternRuleTest#testRules -DfailIfNoTests=false
+
+before_deploy:
+- tar -zcvf coverage-result.tar.gz /home/travis/build/leusonmario/languagetool/target/site/cobertura
+
+deploy:
+  provider: releases
+  api_key:
+    secure: "Q46X4I9nGTgEL4fXdPVhCr4nvJoX5cQMrsIxufPeWZ2QS/hbUAEoQRH1LH1gTZ1SxPWD4A/Fy9gUN2k6cBF2KzWOzh3WXAYIODCazgwiuK5lwOLb20tYJxFM94mgA5psJ28fuvJiY/Lx0dltyXTx8M4scNw/F/A60AL9SKIfTcpc2uqiSlVla6Zj9OJG7fEjAOFspH7pfJDNMBSEApM4IO8fBKXJdLL8FVokV+J9B6xt1G8kWY1GvAZzpvbBUUEwMv6KOxaokiMGurSLTv3+/14HiJ9sERccRwWqJKTvchM9/2FxHzYXGGuOOeRYOqeWUiqPN8J7Y2vRq3bJnikcNgO3LNszg2mCXszyG7K7aJ/OfISrQbdqsbe2WJAOdTSu6DcZnLH2CLJOVroR3bdGfy0K4Z0OLn731xId5HORWmxlp12kYlXISQkm0JtrHOEe5eKlM2+mWm27wEZvYh8SW9Rk5Oq1doBPSZA+CPh2gdg2yM7YTInjb3BW31iPP1Brf9i1eL+eSZUyt0MkYuBOBMH5UCde1vqqw6WplN17S+CO4ESnM8lDgDvT2ayViVGH9b1O126N0Rwbg3cOrSWNSAb1IScm1O3CZ1KWKSDLxdnOwcDtL9HdKcuXjjfhpD1nqRBqs3f9k+YyWpjidH9uvI2kAujp3m5RXMPW5XTdmCA="
+
+
+  file: coverage-result.tar.gz
+  file_glob: true
+  overwrite: true
+  skip_cleanup: true
+  on:
+    tags: true
